@@ -1,0 +1,165 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="title">
+      <h2>Clients</h2>
+      <p class="subtitle">Gérez vos clients : création, modification, suppression.</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button" (click)="resetForm()">Nouveau</button>
+      <button class="btn btn-primary" type="button" (click)="loadClients()">Rafraîchir</button>
+    </div>
+  </div>
+
+  <!-- Alert message -->
+  <div class="alert" *ngIf="message">
+    {{ message }}
+  </div>
+
+  <div class="grid">
+    <!-- LISTE -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <h3>Liste des clients</h3>
+          <p class="muted">{{ clients.length }} client(s)</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Client</th>
+              <th>Tél</th>
+              <th>Ville</th>
+              <th>Genre</th>
+              <th class="th-actions">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let c of clients" (click)="selectClient(c)" class="row-click">
+              <td class="mono">#{{ c.id }}</td>
+
+              <td>
+                <div class="client-cell">
+                  <div class="avatar">
+                   {{ (c.nomClient[0] || 'C') }}{{ (c.prenomClient[0] || '') }}
+
+                  </div>
+                  <div>
+                    <div class="client-name">{{ c.nomClient }} {{ c.prenomClient }}</div>
+                    <div class="muted small">CIN: {{ c.cin || '—' }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="mono">{{ c.telephone || '—' }}</td>
+              <td>{{ c.ville || '—' }}</td>
+
+              <td>
+                <span class="badge" [class.badge-male]="c.genre === 'HOMME'"
+                                   [class.badge-female]="c.genre === 'FEMME'">
+                  {{ c.genre || '—' }}
+                </span>
+              </td>
+
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn btn-small btn-outline" type="button" (click)="selectClient(c)">Edit</button>
+                <button class="btn btn-small btn-danger" type="button" (click)="delete(c.id)">Delete</button>
+              </td>
+            </tr>
+
+            <tr *ngIf="clients.length === 0">
+              <td colspan="6" class="empty">
+                <div class="empty-box">
+                  <div class="empty-title">Aucun client</div>
+                  <div class="muted">Clique sur “Nouveau” pour ajouter un client.</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <h3>{{ selectedId ? 'Modifier' : 'Créer' }} un client</h3>
+          <p class="muted">
+            {{ selectedId ? 'Vous modifiez le client sélectionné.' : 'Remplissez le formulaire pour ajouter un client.' }}
+          </p>
+        </div>
+
+        <div class="chip" *ngIf="selectedId">
+          ID: <span class="mono">#{{ selectedId }}</span>
+        </div>
+      </div>
+
+      <form (ngSubmit)="save()" class="form">
+        <div class="row">
+          <div class="field">
+            <label>Nom</label>
+            <input class="input" [(ngModel)]="form.nomClient" name="nomClient" placeholder="Ex: El Amrani" required />
+          </div>
+
+          <div class="field">
+            <label>Prénom</label>
+            <input class="input" [(ngModel)]="form.prenomClient" name="prenomClient" placeholder="Ex: Youssef" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Téléphone</label>
+            <input class="input" [(ngModel)]="form.telephone" name="telephone" placeholder="Ex: 06xxxxxxxx" />
+          </div>
+
+          <div class="field">
+            <label>CIN</label>
+            <input class="input" [(ngModel)]="form.cin" name="cin" placeholder="Ex: AB123456" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Date naissance</label>
+            <input class="input" type="date" [(ngModel)]="form.dateNaissance" name="dateNaissance" />
+          </div>
+
+          <div class="field">
+            <label>Genre</label>
+            <select class="input" [(ngModel)]="form.genre" name="genre">
+              <option *ngFor="let g of genres" [ngValue]="g">{{ g }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Ville</label>
+            <input class="input" [(ngModel)]="form.ville" name="ville" placeholder="Ex: Casablanca" />
+          </div>
+
+          <div class="field">
+            <label>Pays</label>
+            <input class="input" [(ngModel)]="form.paye" name="paye" placeholder="Ex: Maroc" />
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn btn-primary" type="submit">
+            {{ selectedId ? 'Mettre à jour' : 'Créer' }}
+          </button>
+
+          <button class="btn btn-ghost" type="button" (click)="resetForm()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
