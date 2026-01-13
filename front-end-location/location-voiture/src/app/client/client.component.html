@@ -47,8 +47,7 @@
               <td>
                 <div class="client-cell">
                   <div class="avatar">
-                   {{ (c.nomClient[0] || 'C') }}{{ (c.prenomClient[0] || '') }}
-
+                    {{ (c.nomClient[0] || 'C') }}{{ (c.prenomClient[0] || '') }}
                   </div>
                   <div>
                     <div class="client-name">{{ c.nomClient }} {{ c.prenomClient }}</div>
@@ -61,15 +60,18 @@
               <td>{{ c.ville || '—' }}</td>
 
               <td>
-                <span class="badge" [class.badge-male]="c.genre === 'HOMME'"
-                                   [class.badge-female]="c.genre === 'FEMME'">
+                <span class="badge"
+                      [class.badge-male]="c.genre === 'HOMME'"
+                      [class.badge-female]="c.genre === 'FEMME'">
                   {{ c.genre || '—' }}
                 </span>
               </td>
 
               <td class="actions" (click)="$event.stopPropagation()">
                 <button class="btn btn-small btn-outline" type="button" (click)="selectClient(c)">Edit</button>
-                <button class="btn btn-small btn-danger" type="button" (click)="delete(c.id)">Delete</button>
+
+                <!-- ✅ MODIF #1 : delete -> openDeleteModal -->
+                <button class="btn btn-small btn-danger" type="button" (click)="openDeleteModal(c.id)">Delete</button>
               </td>
             </tr>
 
@@ -160,6 +162,31 @@
           <button class="btn btn-ghost" type="button" (click)="resetForm()">Annuler</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-backdrop" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()">
+  <div class="modal modal-sm" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title">Supprimer client</h3>
+        <p class="modal-subtitle">Cette action est irréversible.</p>
+      </div>
+      <button class="icon-btn" type="button" (click)="closeDeleteModal()" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="danger-box">
+        Voulez-vous vraiment supprimer le client
+        <span class="mono">#{{ clientToDeleteId }}</span> ?
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-danger" type="button" (click)="confirmDelete()">Oui, supprimer</button>
+        <button class="btn btn-ghost" type="button" (click)="closeDeleteModal()">Annuler</button>
+      </div>
     </div>
   </div>
 </div>

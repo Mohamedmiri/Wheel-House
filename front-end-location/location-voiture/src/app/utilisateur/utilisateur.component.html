@@ -1,0 +1,136 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="title">
+      <h2>Utilisateurs</h2>
+      <p class="subtitle">Gestion des utilisateurs : création, modification, suppression.</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button" (click)="resetForm()">Nouveau</button>
+      <button class="btn btn-primary" type="button" (click)="loadUsers()">Rafraîchir</button>
+    </div>
+  </div>
+
+  <div class="alert" *ngIf="message">{{ message }}</div>
+
+  <div class="grid">
+    <!-- LISTE -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <h3>Liste des utilisateurs</h3>
+          <p class="muted">{{ users.length }} utilisateur(s)</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th class="th-actions">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let u of users" (click)="selectUser(u)" class="row-click">
+              <td class="mono">#{{ u.id }}</td>
+
+              <td>
+                <div class="user-cell">
+                  <div class="avatar">{{ (u.userName && u.userName[0]) ? u.userName[0].toUpperCase() : 'U' }}</div>
+                  <div>
+                    <div class="user-name">{{ u.userName }}</div>
+                    <div class="muted small" *ngIf="u.roles.length">
+                           Roles: {{ getRolesText(u) }}
+                    </div>
+
+                  </div>
+                </div>
+              </td>
+
+              <td class="actions" (click)="$event.stopPropagation()">
+                <button class="btn btn-small btn-outline" type="button" (click)="selectUser(u)">Edit</button>
+                <button class="btn btn-small btn-danger" type="button" (click)="openDeleteModal(u.id)">Delete</button>
+              </td>
+            </tr>
+
+            <tr *ngIf="users.length === 0">
+              <td colspan="3" class="empty">
+                <div class="empty-box">
+                  <div class="empty-title">Aucun utilisateur</div>
+                  <div class="muted">Clique sur “Nouveau” pour ajouter un utilisateur.</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <h3>{{ selectedId ? 'Modifier' : 'Créer' }} un utilisateur</h3>
+          <p class="muted">
+            {{ selectedId ? 'Vous modifiez l’utilisateur sélectionné.' : 'Remplissez le formulaire pour ajouter un utilisateur.' }}
+          </p>
+        </div>
+
+        <div class="chip" *ngIf="selectedId">
+          ID: <span class="mono">#{{ selectedId }}</span>
+        </div>
+      </div>
+
+      <form class="form" (ngSubmit)="selectedId ? updateUser() : createUser()">
+        <div class="row">
+          <div class="field">
+            <label>Username</label>
+            <input class="input" [(ngModel)]="form.userName" name="userName" placeholder="Ex: admin" required />
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <input class="input" type="password" [(ngModel)]="form.password" name="password" placeholder="Ex: ********" />
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn btn-primary" type="submit">
+            {{ selectedId ? 'Mettre à jour' : 'Créer' }}
+          </button>
+
+          <button class="btn btn-ghost" type="button" (click)="resetForm()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-backdrop" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()">
+  <div class="modal modal-sm" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title">Supprimer utilisateur</h3>
+        <p class="modal-subtitle">Cette action est irréversible.</p>
+      </div>
+      <button class="icon-btn" type="button" (click)="closeDeleteModal()" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="danger-box">
+        Voulez-vous vraiment supprimer l’utilisateur
+        <span class="mono">#{{ userToDeleteId }}</span> ?
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-danger" type="button" (click)="confirmDelete()">Oui, supprimer</button>
+        <button class="btn btn-ghost" type="button" (click)="closeDeleteModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>

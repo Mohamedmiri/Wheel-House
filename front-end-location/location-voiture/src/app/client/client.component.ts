@@ -84,7 +84,7 @@ export class ClientComponent implements OnInit {
     if (this.selectedId) {
       this.clientService.updateClient(this.selectedId, this.form).subscribe({
         next: () => {
-          this.message = 'Client modifié ✅';
+          this.message = 'Client modifié ';
           this.loadClients();
           this.resetForm();
           this.closeFormModal();
@@ -94,7 +94,7 @@ export class ClientComponent implements OnInit {
     } else {
       this.clientService.createClient(this.form).subscribe({
         next: () => {
-          this.message = 'Client créé ✅';
+          this.message = 'Client créé ';
           this.loadClients();
           this.resetForm();
           this.closeFormModal();
@@ -110,7 +110,7 @@ export class ClientComponent implements OnInit {
 
     this.clientService.deleteClient(id).subscribe({
       next: (res) => {
-        this.message = res || 'Client supprimé ✅';
+        this.message = res || 'Client supprimé ';
         this.loadClients();
         if (this.selectedId === id) this.resetForm();
       },

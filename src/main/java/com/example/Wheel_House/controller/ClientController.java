@@ -39,7 +39,7 @@ public class ClientController {
         return clientService.updateClient(id, dto);
     }
 
-    // DELETE
+
     @DeleteMapping("/{id}")
     public String deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
